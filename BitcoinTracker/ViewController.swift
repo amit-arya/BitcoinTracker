@@ -16,15 +16,22 @@ class ViewController: UIViewController {
     @IBOutlet weak var lastUpdatedLabel: UILabel!
     
     let urlString = "https://api.coingecko.com/api/v3/exchange_rates"
+    var timer: Timer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchData()
         
-        let timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(refreshData), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(refreshData), userInfo: nil, repeats: true)
     }
     
-    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        if timer != nil{
+            timer?.invalidate()
+        }
+    }
 
     
     @objc func refreshData()-> Void{
@@ -34,7 +41,7 @@ class ViewController: UIViewController {
     func fetchData(){
         let url = URL(string: urlString)
         let defaultSession = URLSession(configuration: .default)
-        let dataTask = defaultSession.dataTask(with: url!) { data, response, error in
+        let dataTask = defaultSession.dataTask(with: url!) { [weak self] data, response, error in
             
             if(error != nil){
                 print(error!)
@@ -43,7 +50,7 @@ class ViewController: UIViewController {
             
             do{
                 let json = try JSONDecoder().decode(Rates.self, from: data!)
-                self.setPrices(currency: json.rates)
+                self?.setPrices(currency: json.rates)
             }
             catch{
                 print(error)
