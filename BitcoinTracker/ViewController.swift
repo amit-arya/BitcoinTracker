@@ -39,9 +39,9 @@ class ViewController: UIViewController {
     }
     
     func fetchData(){
-        let url = URL(string: urlString)
+        guard let url = URL(string: urlString) else { return }
         let defaultSession = URLSession(configuration: .default)
-        let dataTask = defaultSession.dataTask(with: url!) { [weak self] data, response, error in
+        let dataTask = defaultSession.dataTask(with: url) { [weak self] data, response, error in
             
             if(error != nil){
                 print(error!)
