@@ -43,8 +43,8 @@ class ViewController: UIViewController {
         let defaultSession = URLSession(configuration: .default)
         let dataTask = defaultSession.dataTask(with: url) { [weak self] data, response, error in
             
-            if(error != nil){
-                print(error!)
+            if let error = error{
+                print(error)
                 return
             }
             
